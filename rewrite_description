@@ -1,0 +1,106 @@
+Если новая модель из SolidWorks имеет идентичную кинематическую структуру, переделывать весь пакет и MoveIt не нужно. Главное — сохранить интерфейс рабочей ROS-модели.
+Ожидаемая структура должна остаться такой:
+joint1 ... joint6 — суставы руки
+gripper           — мотор захвата
+base_link         — основание
+End_link          — конец кинематической цепочки
+Если SolidWorks экспортирует семь подвижных суставов:
+joint1
+joint2
+joint3
+joint4
+joint5
+joint6
+joint7
+то нужно переименовать только:
+joint7 → gripper
+Первые шесть уже будут совпадать с ROS и SDK:
+joint1 → мотор 0
+joint2 → мотор 1
+...
+joint6 → мотор 5
+gripper → мотор 6
+Нумерация ROS-суставов с единицы — это нормально. Нумерация моторов SDK с нуля тоже остаётся нормальной.
+Что потребуется проверить после нового экспорта
+1. Имя пакета в путях мешей
+SolidWorks может создать:
+filename="package://RARS01_1/meshes/base_link.STL"
+Нужно заменить на:
+filename="package://rars01_description/meshes/base_link.STL"
+2. Название робота
+Оставляем:
+<robot name="rars01">
+Оно должно совпадать с MoveIt-конфигурацией и SRDF.
+3. Названия суставов
+Рабочий контракт:
+joint1
+joint2
+joint3
+joint4
+joint5
+joint6
+gripper
+Имена не стоит менять на joint0…joint6, потому что ROS-контроллер и MoveIt сейчас ожидают именно текущую схему.
+4. Названия крайних звеньев
+Если сохраняются:
+base_link
+End_link
+то SRDF менять не потребуется:
+<chain base_link="base_link" tip_link="End_link"/>
+Если SolidWorks изменит имя End_link, придётся обновить:
+SRDF;
+end-effector;
+отключённые пары самоколлизий;
+тесты обратной кинематики.
+5. Оси суставов
+После экспорта обязательно сравниваем:
+<axis xyz="..."/>
+Ось в URDF задаёт положительное направление сустава в ROS.
+Знак физического мотора согласовываем через SDK:
+MotorConfiguration.direction
+Не нужно одновременно инвертировать и axis в URDF, и direction в SDK без необходимости — иначе получится двойная инверсия.
+6. Origins
+Новая геометрия передаётся через:
+<origin xyz="..." rpy="..."/>
+Если размеры звеньев изменились, нужно взять новые origin из экспорта. KDL и MoveIt автоматически будут считать кинематику по новой геометрии — отдельные формулы обратной кинематики переписывать не потребуется.
+7. Ограничения
+SolidWorks может снова экспортировать неправильные значения:
+velocity="0"
+effort="0"
+Это особенно вероятно для последнего сустава и захвата. Нужно проверить для каждого revolute joint:
+<limit
+  lower="..."
+  upper="..."
+  effort="..."
+  velocity="..."
+/>
+Для fixed joint блоки axis и limit не нужны.
+Что не придётся менять
+Если имена звеньев и суставов сохранятся, не потребуется переделывать:
+[rars01.srdf](/home/ruben/Rars/reBotArmController_ROS2/src/rebotarm_moveit_config/config/rars01.srdf);
+KDL IK;
+OMPL;
+mock ros2_control;
+trajectory controllers;
+SDK mapping;
+RViz;
+launch-файлы.
+Достаточно заменить:
+rars01_description/urdf/rars01.urdf
+rars01_description/meshes/*.STL
+и пересобрать workspace.
+Рекомендуемый процесс обновления
+Новый экспорт сначала класть отдельно:
+source/solidworks_export/version_2/
+После этого:
+Сравнить новый URDF с рабочим rars01.urdf.
+Перенести новую геометрию, инерции и origins.
+Нормализовать package paths.
+Проверить joint1…joint6.
+Переименовать седьмой сустав в gripper.
+Проверить оси и limits.
+Запустить check_urdf.
+Проверить модель в RViz.
+Проверить rars_mock_control demo.
+Проверить IK и MoveIt Plan & Execute.
+То есть для идентичной модели изменения будут небольшими. Можно также добавить в rars01_description скрипт импорта SolidWorks URDF, который автоматически будет менять имя пакета, нормализовать joint1…joint6 и переименовывать joint7 в gripper.
