@@ -1,51 +1,39 @@
 # rars01_description
 
-ROS 2 description package for the RARS01 six-axis manipulator and its
-single-motor gripper.
+Структура рабочих файлов и исходного SolidWorks-экспорта описана в
+[`ARCHITECTURE.md`](ARCHITECTURE.md).
 
-## Contents
+Пакет описания робота RARS01 для ROS 2.
 
-- `urdf/rars01.urdf` — working ROS 2 model used by RViz and MoveIt.
-- `source/solidworks_export/` — original SolidWorks URDF, CSV and ROS 1
-  exporter files kept for reference.
-- `meshes/` — visual and collision STL meshes.
-- `launch/display.launch.py` — standalone model and joint-axis inspection.
+## Содержимое
 
-The ROS joint-to-motor mapping is:
+- `urdf/rars01.urdf` — рабочая модель робота;
+- `meshes/` — visual и collision STL;
+- `launch/display.launch.py` — просмотр модели и ручная проверка суставов;
+- `source/solidworks_export/` — исходный экспорт SolidWorks без ROS-правок.
 
-| ROS joint | SDK motor |
-|---|---:|
-| `joint1` ... `joint6` | 0 ... 5 |
-| `gripper` | 6 |
-
-## Standalone build
+## Сборка
 
 ```bash
 source /opt/ros/humble/setup.bash
-colcon build --symlink-install
+colcon build \
+  --symlink-install \
+  --event-handlers console_direct+ \
+  --cmake-args \
+  -DPython3_EXECUTABLE=/usr/bin/python3
 source install/setup.bash
 ```
 
-Display the model:
+ROS 2 Humble должен собираться системным Python 3.10. Если CMake раньше
+закэшировал Miniconda Python, удалите `build/` или добавьте
+`--cmake-clean-cache`.
+
+## Просмотр модели
 
 ```bash
 ros2 launch rars01_description display.launch.py
 ```
 
-## MoveIt integration
-
-Place this repository next to `reBotArmController_ROS2` and build both from
-their parent directory:
-
-```bash
-source /opt/ros/humble/setup.bash
-colcon build --symlink-install \
-  --base-paths rars01_description reBotArmController_ROS2/src
-source install/setup.bash
-
-ros2 launch rebotarm_moveit_config demo.launch.py model:=rars
-```
-
-The original SolidWorks export should remain unchanged. Make ROS-specific
-joint-name, package-path and controller compatibility changes in
-`urdf/rars01.urdf`.
+Имена рабочих суставов: `joint1..joint6` и `gripper`. ROS-совместимые изменения
+вносятся в `urdf/rars01.urdf`; оригинальный SolidWorks export в `source/`
+сохраняется без изменений.
