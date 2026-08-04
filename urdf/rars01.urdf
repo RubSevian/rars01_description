@@ -156,7 +156,7 @@
       xyz="0 1 0" />
     <limit
       lower="0"
-      upper="3.14"
+      upper="3.6"
       effort="27"
       velocity="10" />
   </joint>
@@ -271,7 +271,7 @@
     <axis
       xyz="0 -1 0" />
     <limit
-      lower="-1.4"
+      lower="-2.0"
       upper="1.4"
       effort="7"
       velocity="10" />
@@ -396,17 +396,17 @@
     name="End_link">
     <inertial>
       <origin
-        xyz="-0.12326839 -0.00285034 -0.00267574"
+        xyz="-0.12103228 -0.00257377 -0.00365566"
         rpy="0 0 0" />
       <mass
-        value="0.35750000" />
+        value="0.45" />
       <inertia
-        ixx="0.00013831"
-        ixy="0.00000627"
-        ixz="-0.00003660"
-        iyy="0.00034080"
-        iyz="-0.00000200"
-        izz="0.00031726" />
+        ixx="0.00015224"
+        ixy="0.00000818"
+        ixz="-0.00004998"
+        iyy="0.00042081"
+        iyz="-0.00000254"
+        izz="0.00039608" />
     </inertial>
     <visual>
       <origin
