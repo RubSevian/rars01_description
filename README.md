@@ -8,7 +8,7 @@
 ## Содержимое
 
 - `urdf/rars01.urdf` — рабочая модель робота;
-- `meshes/` — visual и collision STL;
+- `meshes/` — visual и collision STL актуальной модели;
 - `launch/display.launch.py` — просмотр модели и ручная проверка суставов;
 - `source/solidworks_export/` — исходный экспорт SolidWorks без ROS-правок.
 
@@ -34,6 +34,7 @@ ROS 2 Humble должен собираться системным Python 3.10. �
 ros2 launch rars01_description display.launch.py
 ```
 
-Имена рабочих суставов: `joint1..joint6` и `gripper`. ROS-совместимые изменения
-вносятся в `urdf/rars01.urdf`; оригинальный SolidWorks export в `source/`
-сохраняется без изменений.
+Имена суставов руки: `joint1..joint6`. Захват состоит из двух призматических звеньев:
+`gripper_left_joint` и `gripper_right_joint`. ROS-совместимые изменения вносятся
+в `urdf/rars01.urdf`; оригинальный SolidWorks export в `source/` сохраняется без
+изменений.

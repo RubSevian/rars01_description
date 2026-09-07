@@ -22,7 +22,7 @@ urdf/rars01.urdf + meshes/
 
 - `urdf/rars01.urdf` — каноническая модель, которую должны подключать
   MoveIt, RViz и `robot_state_publisher`.
-- `meshes/` — девять рабочих STL-моделей звеньев, на которые ссылается
+- `meshes/` — десять рабочих STL-моделей звеньев, на которые ссылается
   канонический URDF.
 - `launch/display.launch.py` — автономный просмотр модели через
   `robot_state_publisher`, `joint_state_publisher_gui` и RViz.

@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
-     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
-     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="RARS01_1">
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="rars01">
   <link
     name="base_link">
     <inertial>
@@ -26,7 +22,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/base_link.STL" />
+          filename="package://rars01_description/meshes/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -40,7 +36,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/base_link.STL" />
+          filename="package://rars01_description/meshes/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -66,7 +62,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link1_m0.STL" />
+          filename="package://rars01_description/meshes/link1_m0.STL" />
       </geometry>
       <material
         name="">
@@ -80,12 +76,12 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link1_m0.STL" />
+          filename="package://rars01_description/meshes/link1_m0.STL" />
       </geometry>
     </collision>
   </link>
   <joint
-    name="joint0"
+    name="joint1"
     type="revolute">
     <origin
       xyz="0 0 0.0643"
@@ -124,7 +120,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link2_m1.STL" />
+          filename="package://rars01_description/meshes/link2_m1.STL" />
       </geometry>
       <material
         name="">
@@ -138,12 +134,12 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link2_m1.STL" />
+          filename="package://rars01_description/meshes/link2_m1.STL" />
       </geometry>
     </collision>
   </link>
   <joint
-    name="joint1"
+    name="joint2"
     type="revolute">
     <origin
       xyz="0.02 -0.029675 0.075"
@@ -156,7 +152,7 @@
       xyz="0 1 0" />
     <limit
       lower="0"
-      upper="3.14"
+      upper="3.6"
       effort="27"
       velocity="10" />
   </joint>
@@ -182,7 +178,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link2_m2.STL" />
+          filename="package://rars01_description/meshes/link2_m2.STL" />
       </geometry>
       <material
         name="">
@@ -196,12 +192,12 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link2_m2.STL" />
+          filename="package://rars01_description/meshes/link2_m2.STL" />
       </geometry>
     </collision>
   </link>
   <joint
-    name="joint2"
+    name="joint3"
     type="revolute">
     <origin
       xyz="-0.250000000000001 0 0"
@@ -240,7 +236,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link_3_m3.STL" />
+          filename="package://rars01_description/meshes/link_3_m3.STL" />
       </geometry>
       <material
         name="">
@@ -254,12 +250,12 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link_3_m3.STL" />
+          filename="package://rars01_description/meshes/link_3_m3.STL" />
       </geometry>
     </collision>
   </link>
   <joint
-    name="joint3"
+    name="joint4"
     type="revolute">
     <origin
       xyz="0.232950000000001 0.00377499999999996 0.0570710741093906"
@@ -271,7 +267,7 @@
     <axis
       xyz="0 -1 0" />
     <limit
-      lower="-1.4"
+      lower="-2.0"
       upper="1.4"
       effort="7"
       velocity="10" />
@@ -298,7 +294,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link_4_m4.STL" />
+          filename="package://rars01_description/meshes/link_4_m4.STL" />
       </geometry>
       <material
         name="">
@@ -312,12 +308,12 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link_4_m4.STL" />
+          filename="package://rars01_description/meshes/link_4_m4.STL" />
       </geometry>
     </collision>
   </link>
   <joint
-    name="joint4"
+    name="joint5"
     type="revolute">
     <origin
       xyz="0.0798112070633211 0.0260499999999993 0.0499999999999984"
@@ -356,7 +352,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link_5_m5.STL" />
+          filename="package://rars01_description/meshes/link_5_m5.STL" />
       </geometry>
       <material
         name="">
@@ -370,12 +366,12 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RARS01_1/meshes/link_5_m5.STL" />
+          filename="package://rars01_description/meshes/link_5_m5.STL" />
       </geometry>
     </collision>
   </link>
   <joint
-    name="joint5"
+    name="joint6"
     type="revolute">
     <origin
       xyz="0.0235 0 -0.049"
@@ -390,122 +386,92 @@
       lower="-2"
       upper="2"
       effort="7"
-      velocity="0" />
+      velocity="10" />
   </joint>
-  <link
-    name="End_link">
+  <link name="End_link">
     <inertial>
-      <origin
-        xyz="-0.12326839 -0.00285034 -0.00267574"
-        rpy="0 0 0" />
-      <mass
-        value="0.35750000" />
-      <inertia
-        ixx="0.00013831"
-        ixy="0.00000627"
-        ixz="-0.00003660"
-        iyy="0.00034080"
-        iyz="-0.00000200"
-        izz="0.00031726" />
+      <origin xyz="-0.1358776 -0.00046489 0.00946022" rpy="0 0 0" />
+      <mass value="0.60527119" />
+      <inertia ixx="0.00114231" ixy="-7.66E-06" ixz="1.053E-05" iyy="0.00073974" iyz="-6.32E-06" izz="0.00104976" />
     </inertial>
     <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://RARS01_1/meshes/End_link.STL" />
+        <mesh filename="package://rars01_description/meshes/End_link.STL" />
       </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.75294 0.75294 0.75294 1" />
+      <material name="">
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://RARS01_1/meshes/End_link.STL" />
+        <mesh filename="package://rars01_description/meshes/End_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint
-    name="joint_end"
-    type="fixed">
-    <origin
-      xyz="0.18 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="link_5_m5" />
-    <child
-      link="End_link" />
-    <axis
-      xyz="0 0 0" />
-    <limit
-      lower="1"
-      upper="0"
-      effort="7"
-      velocity="0" />
+  <joint name="joint_end" type="fixed">
+    <origin xyz="0.195000000000023 0 0" rpy="0 0 0" />
+    <parent link="link_5_m5" />
+    <child link="End_link" />
   </joint>
-  <link
-    name="link_6_m6">
+  <link name="gripper_left">
     <inertial>
-      <origin
-        xyz="0.04895421 0.02653843 0.00589959"
-        rpy="0 0 0" />
-      <mass
-        value="0.055137" />
-      <inertia
-        ixx="0.00004513"
-        ixy="-0.00000526"
-        ixz="0.00000537"
-        iyy="0.00015219"
-        iyz="-0.00000094"
-        izz="0.00018565" />
+      <origin xyz="-0.03223739 0.01428588 6.15E-06" rpy="0 0 0" />
+      <mass value="0.08529926" />
+      <inertia ixx="1.866E-05" ixy="-3.18E-06" ixz="0" iyy="6.04E-05" iyz="0" izz="5.513E-05" />
     </inertial>
     <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://RARS01_1/meshes/link_6_m6.STL" />
+        <mesh filename="package://rars01_description/meshes/gripper_left.STL" />
       </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.75294 0.75294 0.75294 1" />
+      <material name="">
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://RARS01_1/meshes/link_6_m6.STL" />
+        <mesh filename="package://rars01_description/meshes/gripper_left.STL" />
       </geometry>
     </collision>
   </link>
-  <joint
-    name="joint6"
-    type="revolute">
-    <origin
-      xyz="-0.13 -0.0255 0"
-      rpy="0 0 0" />
-    <parent
-      link="End_link" />
-    <child
-      link="link_6_m6" />
-    <axis
-      xyz="0 -1 0" />
-    <limit
-      lower="0"
-      upper="1.4"
-      effort="0"
-      velocity="0" />
+  <joint name="gripper_left_joint" type="prismatic">
+    <origin xyz="-0.0375 0 0" rpy="0 0 0" />
+    <parent link="End_link" />
+    <child link="gripper_left" />
+    <axis xyz="0 1 0" />
+    <limit lower="0" upper="0.05" effort="3" velocity="10" />
+  </joint>
+  <link name="gripper_right">
+    <inertial>
+      <origin xyz="-0.03223739 -0.01428588 6.15E-06" rpy="0 0 0" />
+      <mass value="0.08529926" />
+      <inertia ixx="1.866E-05" ixy="3.18E-06" ixz="0" iyy="6.04E-05" iyz="0" izz="5.513E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rars01_description/meshes/gripper_right.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rars01_description/meshes/gripper_right.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="gripper_right_joint" type="prismatic">
+    <origin xyz="-0.0375000000000192 0 0" rpy="0 0 0" />
+    <parent link="End_link" />
+    <child link="gripper_right" />
+    <axis xyz="0 -1 0" />
+    <limit lower="0" upper="0.05" effort="3" velocity="10" />
+    <mimic joint="gripper_left_joint" multiplier="1" offset="0" />
   </joint>
 </robot>
