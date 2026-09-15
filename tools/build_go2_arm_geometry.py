@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
-"""Build combined Unitree Go2 + RARS01 URDFs for fitting and baseline tests.
+"""Build canonical ROS2 and Isaac-training Go2 + RARS01 URDF variants.
 
 Outputs:
-  urdf/go2_arm_dynamic.urdf       - Go2 + movable RARS01 (for RViz fitting)
-  urdf/go2_arm_static.urdf        - arm/gripper joints fixed at q=0
-  urdf/go2_arm_static_train.urdf  - same static model, arm collisions removed
+  urdf/go2_arm_dynamic_base.urdf   - ROS2/RViz: movable RARS01, canonical visuals
+  urdf/go2_arm_static_base.urdf    - ROS2/RViz: RARS01 fixed at q=0, canonical visuals
+  urdf/go2_arm_dynamic_train.urdf  - Isaac: movable RARS01, train-safe arm geometry
+  urdf/go2_arm_static_train.urdf   - Isaac: RARS01 fixed at q=0, train-safe arm geometry
+
+Why base/train are separate:
+Isaac Gym's global ``flip_visual_attachments`` option is applied to the whole
+combined asset.  The stock Go2 DAE meshes need the current Go2 setting, while
+the RARS01 SolidWorks STL meshes use the canonical ROS/URDF convention.  A
+single visual asset therefore cannot be assumed correct in both backends.
+
+The *_base files are the source for ROS2/RViz/IK visualization and preserve all
+canonical RARS01 visuals/collisions.  The *_train files preserve kinematics,
+mass, COM and inertia, but by default remove RARS01 visual and collision meshes.
+This prevents a misleading flipped arm in Isaac and avoids expensive STL
+contacts during large parallel training.  Train-specific converted meshes can
+be added later without ever modifying the canonical RARS01 URDF.
 
 The Go2 source is pinned as a git submodule under external/workshop_legged_gym.
 Only Python standard library is required.
@@ -27,6 +41,11 @@ DEFAULT_MOUNT = ROOT / "config/go2_arm_mount.json"
 
 GO2_MESH_PREFIX = "package://rars01_description/go2_dae/"
 ARM_MESH_PREFIX = "package://rars01_description/meshes/"
+
+LEGACY_OUTPUTS = (
+    ROOT / "urdf/go2_arm_dynamic.urdf",
+    ROOT / "urdf/go2_arm_static.urdf",
+)
 
 
 class GeometryError(RuntimeError):
@@ -73,7 +92,7 @@ def _rewrite_go2_meshes(root: ET.Element) -> None:
         if not filename:
             continue
         # Stock Go2 URDF uses ../dae/<name>.dae. Keep only basename and make
-        # the combined package independent of its source-tree location.
+        # the combined ROS package independent of the source-tree location.
         mesh.set("filename", GO2_MESH_PREFIX + Path(filename).name)
 
 
@@ -105,7 +124,11 @@ def _mount_joint(cfg: dict) -> ET.Element:
     return joint
 
 
-def _merge(go2_source: ET.Element, arm_source: ET.Element, mount_cfg: dict) -> tuple[ET.Element, set[str]]:
+def _merge(
+    go2_source: ET.Element,
+    arm_source: ET.Element,
+    mount_cfg: dict,
+) -> tuple[ET.Element, set[str], set[str]]:
     go2 = copy.deepcopy(go2_source)
     arm = copy.deepcopy(arm_source)
     _validate_no_name_collisions(go2, arm)
@@ -117,6 +140,7 @@ def _merge(go2_source: ET.Element, arm_source: ET.Element, mount_cfg: dict) -> t
     if mount_cfg["child_link"] not in _names(arm, "link"):
         raise GeometryError(f"RARS01 child link '{mount_cfg['child_link']}' does not exist")
 
+    arm_link_names = _names(arm, "link")
     arm_joint_names = _names(arm, "joint")
     go2.set("name", "go2_rars01")
 
@@ -125,7 +149,7 @@ def _merge(go2_source: ET.Element, arm_source: ET.Element, mount_cfg: dict) -> t
     for element in list(arm):
         go2.append(copy.deepcopy(element))
     go2.append(_mount_joint(mount_cfg))
-    return go2, arm_joint_names
+    return go2, arm_link_names, arm_joint_names
 
 
 def _fix_arm_joints(root: ET.Element, arm_joint_names: set[str]) -> None:
@@ -148,12 +172,30 @@ def _fix_arm_joints(root: ET.Element, arm_joint_names: set[str]) -> None:
                 joint.remove(child)
 
 
-def _strip_arm_collisions(root: ET.Element, arm_link_names: set[str]) -> None:
+def _strip_link_elements(root: ET.Element, link_names: set[str], tag: str) -> None:
     for link in root.findall("link"):
-        if link.get("name") not in arm_link_names:
+        if link.get("name") not in link_names:
             continue
-        for collision in list(link.findall("collision")):
-            link.remove(collision)
+        for element in list(link.findall(tag)):
+            link.remove(element)
+
+
+def _prepare_train_variant(
+    root: ET.Element,
+    arm_link_names: set[str],
+    *,
+    keep_arm_visuals: bool,
+) -> None:
+    # High-poly STL collision meshes are intentionally not used in the first
+    # large-scale locomotion experiments.  Mass/COM/inertia are untouched.
+    _strip_link_elements(root, arm_link_names, "collision")
+
+    # Isaac Gym exposes one global flip_visual_attachments switch per asset.
+    # Go2 and the SolidWorks STL arm do not share the same visual convention.
+    # Until train-specific converted meshes are generated, hiding the RARS01
+    # visual is safer than displaying a geometrically misleading flipped arm.
+    if not keep_arm_visuals:
+        _strip_link_elements(root, arm_link_names, "visual")
 
 
 def _sum_mass(root: ET.Element, selected_links: set[str] | None = None) -> float:
@@ -178,58 +220,94 @@ def _movable_joint_names(root: ET.Element) -> list[str]:
 def _write(root: ET.Element, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     ET.indent(root, space="  ")
-    tree = ET.ElementTree(root)
-    tree.write(path, encoding="utf-8", xml_declaration=True)
+    ET.ElementTree(root).write(path, encoding="utf-8", xml_declaration=True)
 
 
-def build(go2_path: Path, arm_path: Path, mount_path: Path) -> None:
+def _remove_legacy_outputs() -> None:
+    for path in LEGACY_OUTPUTS:
+        if path.exists():
+            path.unlink()
+
+
+def build(
+    go2_path: Path,
+    arm_path: Path,
+    mount_path: Path,
+    *,
+    keep_train_arm_visuals: bool = False,
+) -> None:
     go2_source = _load_robot(go2_path)
     arm_source = _load_robot(arm_path)
     mount_cfg = _load_mount(mount_path)
 
-    arm_links = _names(arm_source, "link")
-    merged, arm_joints = _merge(go2_source, arm_source, mount_cfg)
+    merged, arm_links, arm_joints = _merge(go2_source, arm_source, mount_cfg)
 
-    dynamic = copy.deepcopy(merged)
-    static = copy.deepcopy(merged)
+    dynamic_base = copy.deepcopy(merged)
+    static_base = copy.deepcopy(merged)
+    dynamic_train = copy.deepcopy(merged)
     static_train = copy.deepcopy(merged)
 
-    _fix_arm_joints(static, arm_joints)
+    _fix_arm_joints(static_base, arm_joints)
     _fix_arm_joints(static_train, arm_joints)
-    _strip_arm_collisions(static_train, arm_links)
 
-    dynamic_path = ROOT / "urdf/go2_arm_dynamic.urdf"
-    static_path = ROOT / "urdf/go2_arm_static.urdf"
-    static_train_path = ROOT / "urdf/go2_arm_static_train.urdf"
+    _prepare_train_variant(
+        dynamic_train,
+        arm_links,
+        keep_arm_visuals=keep_train_arm_visuals,
+    )
+    _prepare_train_variant(
+        static_train,
+        arm_links,
+        keep_arm_visuals=keep_train_arm_visuals,
+    )
 
-    _write(dynamic, dynamic_path)
-    _write(static, static_path)
-    _write(static_train, static_train_path)
+    paths = {
+        "dynamic_base": ROOT / "urdf/go2_arm_dynamic_base.urdf",
+        "static_base": ROOT / "urdf/go2_arm_static_base.urdf",
+        "dynamic_train": ROOT / "urdf/go2_arm_dynamic_train.urdf",
+        "static_train": ROOT / "urdf/go2_arm_static_train.urdf",
+    }
+
+    _remove_legacy_outputs()
+    _write(dynamic_base, paths["dynamic_base"])
+    _write(static_base, paths["static_base"])
+    _write(dynamic_train, paths["dynamic_train"])
+    _write(static_train, paths["static_train"])
 
     arm_mass = _sum_mass(merged, arm_links)
     system_mass = _sum_mass(merged)
     xyz = mount_cfg["xyz_m"]
     rpy = mount_cfg["rpy_rad"]
 
+    dynamic_names = _movable_joint_names(dynamic_base)
+    static_names = _movable_joint_names(static_base)
+    train_dynamic_names = _movable_joint_names(dynamic_train)
+    train_static_names = _movable_joint_names(static_train)
+
+    # Base/train backend variants must differ only in visual/collision geometry,
+    # never in kinematics or DOF structure.
+    if dynamic_names != train_dynamic_names:
+        raise GeometryError("Dynamic base/train DOF lists differ")
+    if static_names != train_static_names:
+        raise GeometryError("Static base/train DOF lists differ")
+
+    # Static variants must leave only the twelve Go2 leg DOFs.
+    if len(static_names) != 12:
+        raise GeometryError(
+            "Expected exactly 12 movable joints in static variants, got "
+            f"{len(static_names)}: {static_names}"
+        )
+
     print("Built Go2 + RARS01 geometry")
     print(f"  mount xyz [m]: {xyz}")
     print(f"  mount rpy [rad]: {rpy}")
     print(f"  arm URDF mass: {arm_mass:.3f} kg")
     print(f"  combined URDF mass: {system_mass:.3f} kg")
-    print(f"  dynamic movable joints: {len(_movable_joint_names(dynamic))}")
-    print(f"  static movable joints:  {len(_movable_joint_names(static))}")
-    print(f"  {dynamic_path.relative_to(ROOT)}")
-    print(f"  {static_path.relative_to(ROOT)}")
-    print(f"  {static_train_path.relative_to(ROOT)}")
-
-    # The static model must leave only the twelve Go2 leg DOFs. Fail loudly if
-    # source models change and invalidate that assumption.
-    static_movable = _movable_joint_names(static)
-    if len(static_movable) != 12:
-        raise GeometryError(
-            "Expected exactly 12 movable joints in static model, got "
-            f"{len(static_movable)}: {static_movable}"
-        )
+    print(f"  dynamic movable joints: {len(dynamic_names)}")
+    print(f"  static movable joints:  {len(static_names)}")
+    print(f"  train arm visuals kept: {keep_train_arm_visuals}")
+    for path in paths.values():
+        print(f"  {path.relative_to(ROOT)}")
 
 
 def main() -> int:
@@ -237,10 +315,24 @@ def main() -> int:
     parser.add_argument("--go2-urdf", type=Path, default=DEFAULT_GO2)
     parser.add_argument("--arm-urdf", type=Path, default=DEFAULT_ARM)
     parser.add_argument("--mount", type=Path, default=DEFAULT_MOUNT)
+    parser.add_argument(
+        "--keep-train-arm-visuals",
+        action="store_true",
+        help=(
+            "Keep RARS01 STL visuals in *_train URDFs for debugging. "
+            "With Go2 flip_visual_attachments=True these visuals may be "
+            "misoriented; this flag never changes physics."
+        ),
+    )
     args = parser.parse_args()
 
     try:
-        build(args.go2_urdf.resolve(), args.arm_urdf.resolve(), args.mount.resolve())
+        build(
+            args.go2_urdf.resolve(),
+            args.arm_urdf.resolve(),
+            args.mount.resolve(),
+            keep_train_arm_visuals=args.keep_train_arm_visuals,
+        )
     except (GeometryError, ET.ParseError, ValueError, OSError, json.JSONDecodeError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
