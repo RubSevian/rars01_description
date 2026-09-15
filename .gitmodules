@@ -1,0 +1,4 @@
+[submodule "external/workshop_legged_gym"]
+	path = external/workshop_legged_gym
+	url = https://github.com/RubSevian/workshop_legged_gym.git
+	branch = walk_diplom
