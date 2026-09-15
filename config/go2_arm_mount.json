@@ -1,0 +1,7 @@
+{
+  "parent_link": "base",
+  "child_link": "base_link",
+  "xyz_m": [0.0, 0.0, 0.060],
+  "rpy_rad": [0.0, 0.0, 0.0],
+  "note": "Initial fitting transform. Go2 base collision height is 0.114 m, so its nominal top is about +0.057 m from base origin. z=0.060 m leaves a small visual clearance. X/Y and yaw must be refined against the real four-screw mounting plate."
+}
