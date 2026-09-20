@@ -5,10 +5,13 @@ This branch is the geometry workspace for mounting the RARS01 manipulator on Uni
 ## Source of truth
 
 - RARS01 canonical model: `urdf/rars01.urdf`.
+- Grasp/IK base-link view: `urdf/rars01_control.urdf`.
 - Go2: pinned git submodule `external/workshop_legged_gym`.
 - Mount transform: `config/go2_arm_mount.json`.
 
-Do not add Isaac-specific corrections to `rars01.urdf`. ROS2/RViz/IK must always use canonical geometry.
+Do not add Isaac-specific corrections to `rars01.urdf`. ROS2/RViz use the
+complete assembly; grasp IK uses `rars01_control.urdf` so its coordinates stay
+relative to the manipulator `base_link`.
 
 ## Generated variants
 
@@ -98,13 +101,16 @@ Current starting value:
 ```json
 {
   "parent_link": "base",
-  "child_link": "base_link",
-  "xyz_m": [0.0, 0.0, 0.060],
+  "child_link": "arm_mount_link",
+  "xyz_m": [-0.03, 0.0, 0.058],
   "rpy_rad": [0.0, 0.0, 0.0]
 }
 ```
 
-The `z = 0.060 m` value is only a fitting starting point. The final X/Y/Z/yaw should be matched to the real mounting plate/base when its geometry is added.
+The values in JSON are the current fitted mount transform. The exported fixed
+joint then places manipulator `base_link` at `[0.074304, 0, 0.0145]` relative
+to `arm_mount_link`. Change only JSON and regenerate the four variants when
+the physical Go2-to-mount X/Y/Z/yaw is refined.
 
 ## RViz fitting
 

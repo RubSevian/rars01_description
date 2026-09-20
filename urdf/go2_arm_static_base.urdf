@@ -658,11 +658,33 @@
     <child link="radar" />
     <axis xyz="0 0 0" />
   </joint>
+  <link name="arm_mount_link">
+    <inertial>
+      <origin xyz="-0.03786323 -0.00035942 0.05150372" rpy="0 0 0" />
+      <mass value="0.804" />
+      <inertia ixx="0.00157782" ixy="-3.304E-05" ixz="-0.00045277" iyy="0.00335158" iyz="-1.556E-05" izz="0.00301924" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rars01_description/meshes/arm_mount_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.48627 0.48627 0.48627 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rars01_description/meshes/arm_mount_link.STL" />
+      </geometry>
+    </collision>
+  </link>
   <link name="base_link">
     <inertial>
-      <origin xyz="0.00000121 0.00002671 0.03970191" rpy="0 0 0" />
+      <origin xyz="1.2E-06 2.671E-05 0.04162595" rpy="0 0 0" />
       <mass value="0.70734477" />
-      <inertia ixx="0.00062372" ixy="0.00000008" ixz="0.00000008" iyy="0.00062088" iyz="-0.00000053" izz="0.00064203" />
+      <inertia ixx="0.0006278" ixy="8E-08" ixz="0" iyy="0.00062501" iyz="-5.3E-07" izz="0.00064201" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -670,7 +692,7 @@
         <mesh filename="package://rars01_description/meshes/base_link.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
@@ -680,11 +702,16 @@
       </geometry>
     </collision>
   </link>
+  <joint name="arm_mount_to_base_link" type="fixed">
+    <origin xyz="0.074304 0 0.0145" rpy="0 0 0" />
+    <parent link="arm_mount_link" />
+    <child link="base_link" />
+  </joint>
   <link name="link1_m0">
     <inertial>
-      <origin xyz="0.00368283 0.00000000 0.03676353" rpy="0 0 0" />
+      <origin xyz="0.0036805 0 0.03676353" rpy="0 0 0" />
       <mass value="0.15406327" />
-      <inertia ixx="0.00025029" ixy="0.00000000" ixz="0.00002971" iyy="0.00016746" iyz="0.00000000" izz="0.00021037" />
+      <inertia ixx="0.00025029" ixy="0" ixz="2.971E-05" iyy="0.00016746" iyz="0" izz="0.00021037" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -692,7 +719,7 @@
         <mesh filename="package://rars01_description/meshes/link1_m0.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
@@ -703,15 +730,15 @@
     </collision>
   </link>
   <joint name="joint1" type="fixed">
-    <origin xyz="0 0 0.0643" rpy="0 0 0" />
+    <origin xyz="0 0 0.0663" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="link1_m0" />
   </joint>
   <link name="link2_m1">
     <inertial>
-      <origin xyz="-0.12500120 0.02752118 0.00183306" rpy="0 0 0" />
-      <mass value="1.05816176" />
-      <inertia ixx="0.00055358" ixy="-0.00000002" ixz="0.00000016" iyy="0.01413546" iyz="0.00000332" izz="0.01424834" />
+      <origin xyz="-0.125 0.027521 0.0018331" rpy="0 0 0" />
+      <mass value="1.0582" />
+      <inertia ixx="0.00055358" ixy="-2E-08" ixz="1.6E-07" iyy="0.014135" iyz="3.32E-06" izz="0.014248" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -719,7 +746,7 @@
         <mesh filename="package://rars01_description/meshes/link2_m1.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
@@ -736,9 +763,9 @@
   </joint>
   <link name="link2_m2">
     <inertial>
-      <origin xyz="0.16246346 0.02859090 0.05711439" rpy="0 0 0" />
-      <mass value="0.67600000" />
-      <inertia ixx="0.00050678" ixy="-0.00005166" ixz="0.00018128" iyy="0.00525458" iyz="-0.00000039" izz="0.00532444" />
+      <origin xyz="0.16246 0.0285909 0.05711439" rpy="0 0 0" />
+      <mass value="0.676" />
+      <inertia ixx="0.00050678" ixy="-5.166E-05" ixz="0.00018128" iyy="0.00525458" iyz="-3.9E-07" izz="0.00532444" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -746,7 +773,7 @@
         <mesh filename="package://rars01_description/meshes/link2_m2.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
@@ -757,15 +784,15 @@
     </collision>
   </link>
   <joint name="joint3" type="fixed">
-    <origin xyz="-0.250000000000001 0 0" rpy="0 0 0" />
+    <origin xyz="-0.25 0 0" rpy="0 0 0" />
     <parent link="link2_m1" />
     <child link="link2_m2" />
   </joint>
   <link name="link_3_m3">
     <inertial>
       <origin xyz="0.06982672 0.02599104 0.06198016" rpy="0 0 0" />
-      <mass value="0.40800000" />
-      <inertia ixx="0.00034942" ixy="-0.00000032" ixz="0.00017848" iyy="0.00054836" iyz="-0.00000075" izz="0.00047248" />
+      <mass value="0.408" />
+      <inertia ixx="0.00034942" ixy="-3.2E-07" ixz="0.00017848" iyy="0.00054836" iyz="-7.5E-07" izz="0.00047248" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -773,7 +800,7 @@
         <mesh filename="package://rars01_description/meshes/link_3_m3.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
@@ -784,15 +811,15 @@
     </collision>
   </link>
   <joint name="joint4" type="fixed">
-    <origin xyz="0.232950000000001 0.00377499999999996 0.0570710741093906" rpy="0 0 0" />
+    <origin xyz="0.23295 0.003775 0.057071" rpy="0 0 0" />
     <parent link="link2_m2" />
     <child link="link_3_m3" />
   </joint>
   <link name="link_4_m4">
     <inertial>
-      <origin xyz="0.00032344 0.00000144 -0.04911762" rpy="0 0 0" />
-      <mass value="0.32605000" />
-      <inertia ixx="0.00014804" ixy="0.00000000" ixz="0.00000943" iyy="0.00014371" iyz="0.00000008" izz="0.00013050" />
+      <origin xyz="0.00032344 1.44E-06 -0.04911762" rpy="0 0 0" />
+      <mass value="0.32605" />
+      <inertia ixx="0.00014804" ixy="0" ixz="9.43E-06" iyy="0.00014371" iyz="8E-08" izz="0.0001305" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -800,7 +827,7 @@
         <mesh filename="package://rars01_description/meshes/link_4_m4.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
@@ -811,15 +838,15 @@
     </collision>
   </link>
   <joint name="joint5" type="fixed">
-    <origin xyz="0.0798112070633211 0.0260499999999993 0.0499999999999984" rpy="0 0 0" />
+    <origin xyz="0.079811 0.02605 0.05" rpy="0 0 0" />
     <parent link="link_3_m3" />
     <child link="link_4_m4" />
   </joint>
   <link name="link_5_m5">
     <inertial>
-      <origin xyz="0.01065087 0.00000000 0.00000333" rpy="0 0 0" />
-      <mass value="0.02620000" />
-      <inertia ixx="0.00000825" ixy="0.00000000" ixz="0.00000000" iyy="0.00000464" iyz="0.00000000" izz="0.00000475" />
+      <origin xyz="0.01065087 0 -3.33E-06" rpy="0 0 0" />
+      <mass value="0.0262" />
+      <inertia ixx="8.25E-06" ixy="0" ixz="0" iyy="4.64E-06" iyz="0" izz="4.75E-06" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -827,7 +854,7 @@
         <mesh filename="package://rars01_description/meshes/link_5_m5.STL" />
       </geometry>
       <material name="">
-        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+        <color rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
     <collision>
@@ -865,7 +892,7 @@
     </collision>
   </link>
   <joint name="joint_end" type="fixed">
-    <origin xyz="0.195000000000023 0 0" rpy="0 0 0" />
+    <origin xyz="0.195 0 0" rpy="0 0 0" />
     <parent link="link_5_m5" />
     <child link="End_link" />
   </joint>
@@ -919,13 +946,13 @@
     </collision>
   </link>
   <joint name="gripper_right_joint" type="fixed">
-    <origin xyz="-0.0375000000000192 0 0" rpy="0 0 0" />
+    <origin xyz="-0.0375 0 0" rpy="0 0 0" />
     <parent link="End_link" />
     <child link="gripper_right" />
   </joint>
   <joint name="go2_to_rars01_mount" type="fixed">
-    <origin xyz="0.05 0 0.06" rpy="0 0 0" />
+    <origin xyz="-0.03 0 0.058" rpy="0 0 0" />
     <parent link="base" />
-    <child link="base_link" />
+    <child link="arm_mount_link" />
   </joint>
 </robot>

@@ -1,7 +1,7 @@
 {
   "parent_link": "base",
-  "child_link": "base_link",
-  "xyz_m": [0.05, 0.0, 0.060],
+  "child_link": "arm_mount_link",
+  "xyz_m": [-0.03, 0.0, 0.058],
   "rpy_rad": [0.0, 0.0, 0.0],
-  "note": "Initial fitting transform. Go2 base collision height is 0.114 m, so its nominal top is about +0.057 m from base origin. z=0.060 m leaves a small visual clearance. X/Y and yaw must be refined against the real four-screw mounting plate."
+  "note": "Configured Go2 base -> physical arm mount transform. The exported mount then places manipulator base_link at xyz=[0.074304, 0, 0.0145] in arm_mount_link. Refine X/Y/Z/yaw here if the real assembly changes, then regenerate the combined URDF files."
 }

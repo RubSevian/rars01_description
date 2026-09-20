@@ -7,7 +7,8 @@
 
 ## Содержимое
 
-- `urdf/rars01.urdf` — рабочая модель робота;
+- `urdf/rars01.urdf` — полная модель: `arm_mount_link → base_link → RARS01`;
+- `urdf/rars01_control.urdf` — модель руки от `base_link` для IK и hand-eye;
 - `meshes/` — visual и collision STL актуальной модели;
 - `launch/display.launch.py` — просмотр модели и ручная проверка суставов;
 - `source/solidworks_export/` — исходный экспорт SolidWorks без ROS-правок.
@@ -34,7 +35,9 @@ ROS 2 Humble должен собираться системным Python 3.10. �
 ros2 launch rars01_description display.launch.py
 ```
 
-Имена суставов руки: `joint1..joint6`. Захват состоит из двух призматических звеньев:
+`arm_mount_link` — корень полной сборки и система крепления к Go2;
+`base_link` — база самого манипулятора. Имена суставов руки: `joint1..joint6`.
+Захват состоит из двух призматических звеньев:
 `gripper_left_joint` и `gripper_right_joint`. ROS-совместимые изменения вносятся
-в `urdf/rars01.urdf`; оригинальный SolidWorks export в `source/` сохраняется без
-изменений.
+согласованно в полную и control-модель; исходный SolidWorks export сохраняется
+отдельно без ROS-правок.
